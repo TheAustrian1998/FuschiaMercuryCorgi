@@ -1,0 +1,10 @@
+{
+  "name": "hardhat-project",
+  "devDependencies": {
+    "hardhat": "^2.9.3"
+  },
+  "dependencies": {
+    "@connext/nxtp-sdk": "^0.2.0-alpha.10",
+    "@openzeppelin/contracts": "^4.6.0"
+  }
+}
