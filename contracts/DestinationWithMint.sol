@@ -3,7 +3,7 @@ pragma solidity ^0.8.11;
 
 import "./Base.sol";
 
-contract Destination is Base, ERC20 {
+contract DestinationWithMint is Base, ERC20 {
 
     bytes4 receiveNUnlock = bytes4(keccak256("receiveNUnlock(uint256,address)"));
 
