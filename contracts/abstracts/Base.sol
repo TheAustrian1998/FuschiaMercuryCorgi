@@ -5,7 +5,7 @@ import { IConnextHandler } from "@connext/nxtp-contracts/contracts/interfaces/IC
 import { IExecutor } from "@connext/nxtp-contracts/contracts/interfaces/IExecutor.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./interfaces/IConnextHandlerAux.sol";
+import "../interfaces/IConnextHandlerAux.sol";
 
 abstract contract Base is Ownable {
 
@@ -16,6 +16,8 @@ abstract contract Base is Ownable {
     uint32 public oppositeContractDomain; // receiver contract chain
 
     address public oppositeContract; // address of opposite contract
+
+    bytes4 receiveNUnlockSelector = bytes4(keccak256("receiveNUnlock(uint256,address)"));
 
     bool isInitialized = false;
 
@@ -60,6 +62,18 @@ abstract contract Base is Ownable {
         thisContractDomain = _thisDomain;
         oppositeContract = _oppositeContract;
         isInitialized = true;
+    }
+
+    function receiveNUnlock(uint amount, address receiver) public virtual onlyExecutor { }
+
+    function _lockNSend(uint amount, address receiver) internal virtual { }
+
+    function lockNSend(uint amount) public { 
+        _lockNSend(amount, msg.sender);
+    }
+
+    function lockNSend(uint amount, address receiver) public {
+        _lockNSend(amount, receiver);
     }
 
 }
