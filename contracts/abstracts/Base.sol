@@ -56,10 +56,8 @@ abstract contract Base is Ownable {
         connext.xcall(xcallArgs);
     }
 
-    function init(uint32 _oppositeDomain, uint32 _thisDomain, address _oppositeContract) public onlyOwner {
+    function init(address _oppositeContract) public onlyOwner {
         require(!isInitialized, "dont hack blz");
-        oppositeContractDomain = _oppositeDomain;
-        thisContractDomain = _thisDomain;
         oppositeContract = _oppositeContract;
         isInitialized = true;
     }
