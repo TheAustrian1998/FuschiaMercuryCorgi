@@ -22,6 +22,7 @@ abstract contract WithLiquidity is Base {
 
     function receiveNUnlock(uint amount, address receiver) public override onlyExecutor {
         require(amount > 0, "!amount");
+        require(availableLiquidity() >= amount, "!liquidity");
         token.transfer(receiver, amount);
     }
 

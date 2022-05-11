@@ -17,7 +17,7 @@ abstract contract Base is Ownable {
 
     address public oppositeContract; // address of opposite contract
 
-    bytes4 receiveNUnlockSelector = bytes4(keccak256("receiveNUnlock(uint256,address)"));
+    bytes4 receiveNUnlockSelector = this.receiveNUnlock.selector; //bytes4(keccak256("receiveNUnlock(uint256,address)"));
 
     bool isInitialized = false;
 
