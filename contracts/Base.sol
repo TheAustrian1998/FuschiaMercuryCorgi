@@ -4,9 +4,10 @@ pragma solidity ^0.8.11;
 import { IConnextHandler } from "@connext/nxtp-contracts/contracts/interfaces/IConnextHandler.sol";
 import { IExecutor } from "@connext/nxtp-contracts/contracts/interfaces/IExecutor.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interfaces/IConnextHandlerAux.sol";
 
-abstract contract Base {
+abstract contract Base is Ownable {
 
     IConnextHandler public immutable connext;
     address public executor; // address of connext executor
@@ -15,6 +16,8 @@ abstract contract Base {
     uint32 public oppositeContractDomain; // receiver contract chain
 
     address public oppositeContract; // address of opposite contract
+
+    bool isInitialized = false;
 
     constructor(IConnextHandler _connext, uint32 _thisContractDomain, uint32 _oppositeContractDomain) {
         connext = _connext;
@@ -49,6 +52,14 @@ abstract contract Base {
         });
 
         connext.xcall(xcallArgs);
+    }
+
+    function init(uint32 _oppositeDomain, uint32 _thisDomain, address _oppositeContract) public onlyOwner {
+        require(!isInitialized, "dont hack blz");
+        oppositeContractDomain = _oppositeDomain;
+        thisContractDomain = _thisDomain;
+        oppositeContract = _oppositeContract;
+        isInitialized = true;
     }
 
 }
