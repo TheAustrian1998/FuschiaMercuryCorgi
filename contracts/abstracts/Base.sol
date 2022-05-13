@@ -29,12 +29,9 @@ abstract contract Base is Ownable {
     }
 
     modifier onlyExecutor() {
-        require(
-            IExecutor(msg.sender).originSender() == oppositeContract && 
-            IExecutor(msg.sender).origin() == oppositeContractDomain && 
-            msg.sender == executor,
-            "!auth"
-        );
+        require(IExecutor(msg.sender).originSender() == oppositeContract, "!oppositeContract");
+        require(IExecutor(msg.sender).origin() == oppositeContractDomain, "!oppositeContractDomain");
+        require(msg.sender == executor, "!executor");
         _;
     }
 

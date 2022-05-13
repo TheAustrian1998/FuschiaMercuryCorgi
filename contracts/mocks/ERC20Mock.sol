@@ -9,4 +9,8 @@ contract ERC20Mock is ERC20 {
         _mint(msg.sender, 21000000 ether);
     }
 
+    function mint(address _to, uint qty) public {
+        _mint(_to, qty);
+    }
+
 }
