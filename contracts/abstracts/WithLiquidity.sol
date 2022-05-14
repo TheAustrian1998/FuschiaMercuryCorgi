@@ -29,4 +29,5 @@ abstract contract WithLiquidity is Base {
     function availableLiquidity() public view returns (uint) {
         return token.balanceOf(address(this));
     }
+    
 }

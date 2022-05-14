@@ -8,6 +8,7 @@ describe("Test", function () {
     let tokenSymbol = "TKN";
     let oppositeContractAddress = ethers.Wallet.createRandom().address;
     let randomOriginSender = ethers.Wallet.createRandom().address;
+    let receiver = ethers.Wallet.createRandom().address;
     let randomDomain = 99;
     let toSend = ethers.utils.parseUnits("20");
     this.deployer;
@@ -56,6 +57,9 @@ describe("Test", function () {
         await this.connextMock.executeReceiveNUnlock(this.sideWithMint.address, toSend, this.randomReceiver.address);
         expect(await this.ERC20Mock.attach(this.sideWithMint.address).balanceOf(this.randomReceiver.address)).equal(toSend);
 
+        // testing revert with !amount
+        await expect(this.connextMock.executeReceiveNUnlock(this.sideWithMint.address, 0, this.randomReceiver.address)).to.be.revertedWith("!amount");
+
         // testing revert with !executor
         await expect(this.falseExecutorConnextMock.executeReceiveNUnlock(this.sideWithMint.address, toSend, this.randomReceiver.address)).to.be.revertedWith("!executor");
 
@@ -71,19 +75,71 @@ describe("Test", function () {
     });
 
     it("Should lockNSend in SideWithMint...", async function () {
+        let toLockNSend = ethers.utils.parseUnits("2");
+        let balanceBefore = 0;
+
         // send some tokens to deployer
         await this.ERC20Mock.attach(this.sideWithMint.address).connect(this.randomReceiver).transfer(this.deployer.address, toSend);
 
         // lock and send
-        // await this.sideWithMint.lockNSend(ethers.utils.parseUnits("2"));
+        balanceBefore = await this.ERC20Mock.attach(this.sideWithMint.address).connect(this.deployer).balanceOf(this.deployer.address);
+        await this.sideWithMint['lockNSend(uint256)'](toLockNSend);
+        expect(Number(await this.ERC20Mock.attach(this.sideWithMint.address).connect(this.deployer).balanceOf(this.deployer.address))).equal(Number(balanceBefore) - Number(toLockNSend));
+
+        balanceBefore = await this.ERC20Mock.attach(this.sideWithMint.address).connect(this.deployer).balanceOf(this.deployer.address);
+        await this.sideWithMint['lockNSend(uint256,address)'](toLockNSend, receiver);
+        expect(Number(await this.ERC20Mock.attach(this.sideWithMint.address).connect(this.deployer).balanceOf(this.deployer.address))).equal(Number(balanceBefore) - Number(toLockNSend));
+        
+        // test revert with !amount
+        await expect(this.sideWithMint['lockNSend(uint256,address)'](0, receiver)).to.be.revertedWith("!amount");
     });
 
     it("Should receiveNUnlock in SideWithLiquidity...", async function () {
+        // testing revert with !liquidity
+        await expect(this.connextMock.executeReceiveNUnlock(this.sideWithLiquidity.address, 100, this.randomReceiver.address)).to.be.revertedWith("!liquidity");
 
+        // add liquidity
+        await this._ERC20Mock.mint(this.sideWithLiquidity.address, ethers.utils.parseUnits("200"));
+
+        // simulate connext
+        await this.connextMock.executeReceiveNUnlock(this.sideWithLiquidity.address, toSend, this.randomReceiver.address);
+        expect(await this._ERC20Mock.balanceOf(this.randomReceiver.address)).equal(toSend);
+
+        // testing revert with !amount
+        await expect(this.connextMock.executeReceiveNUnlock(this.sideWithLiquidity.address, 0, this.randomReceiver.address)).to.be.revertedWith("!amount");
+
+        // testing revert with !executor
+        await expect(this.falseExecutorConnextMock.executeReceiveNUnlock(this.sideWithLiquidity.address, toSend, this.randomReceiver.address)).to.be.revertedWith("!executor");
+
+        // testing revert with !oppositeContractDomain
+        await this.connextMock.changeOrigin(randomDomain);
+        await expect(this.connextMock.executeReceiveNUnlock(this.sideWithLiquidity.address, toSend, this.randomReceiver.address)).to.be.revertedWith("!oppositeContractDomain");
+        await this.connextMock.changeOrigin(oppositeContractDomain);
+
+        // testing revert with !oppositeContract
+        await this.connextMock.changeOriginSender(randomOriginSender);
+        await expect(this.connextMock.executeReceiveNUnlock(this.sideWithLiquidity.address, toSend, this.randomReceiver.address)).to.be.revertedWith("!oppositeContract");
+        await this.connextMock.changeOriginSender(oppositeContractAddress);
     });
 
     it("Should lockNSend in SideWithLiquidity...", async function () {
+        let toLockNSend = ethers.utils.parseUnits("2");
+        let balanceBefore = 0;
+        
+        // approve
+        await this._ERC20Mock.approve(this.sideWithLiquidity.address, ethers.constants.MaxUint256);
+        
+        // lock and send
+        balanceBefore = await this._ERC20Mock.balanceOf(this.deployer.address);
+        await this.sideWithLiquidity['lockNSend(uint256)'](toLockNSend);
+        expect(Number(await this._ERC20Mock.balanceOf(this.deployer.address))).equal(Number(balanceBefore) - Number(toLockNSend));
 
+        balanceBefore = await this._ERC20Mock.balanceOf(this.deployer.address);
+        await this.sideWithLiquidity['lockNSend(uint256,address)'](toLockNSend, receiver);
+        expect(Number(await this._ERC20Mock.balanceOf(this.deployer.address))).equal(Number(balanceBefore) - Number(toLockNSend));
+        
+        // test revert with !amount
+        await expect(this.sideWithLiquidity['lockNSend(uint256,address)'](0, receiver)).to.be.revertedWith("!amount");
     });
 
 });
