@@ -9,6 +9,7 @@ describe("Test", function () {
     let oppositeContractAddress = ethers.Wallet.createRandom().address;
     let randomOriginSender = ethers.Wallet.createRandom().address;
     let receiver = ethers.Wallet.createRandom().address;
+    let tokenFee = ethers.Wallet.createRandom().address;
     let randomDomain = 99;
     let toSend = ethers.utils.parseUnits("20");
     this.deployer;
@@ -33,12 +34,12 @@ describe("Test", function () {
 
         //Deploy SideWithLiquidity
         this.SideWithLiquidity = await ethers.getContractFactory("SideWithLiquidity");
-        this.sideWithLiquidity = await this.SideWithLiquidity.deploy(this.connextMock.address, thisContractDomain, oppositeContractDomain, this._ERC20Mock.address);
+        this.sideWithLiquidity = await this.SideWithLiquidity.deploy(this.connextMock.address, thisContractDomain, oppositeContractDomain, tokenFee, this._ERC20Mock.address);
         await this.sideWithLiquidity.deployed();
 
         //Deploy SideWithMint
         this.SideWithMint = await ethers.getContractFactory("SideWithMint");
-        this.sideWithMint = await this.SideWithMint.deploy(this.connextMock.address, thisContractDomain, oppositeContractDomain, tokenName, tokenSymbol);
+        this.sideWithMint = await this.SideWithMint.deploy(this.connextMock.address, thisContractDomain, oppositeContractDomain, tokenFee, tokenName, tokenSymbol);
         await this.sideWithMint.deployed();
     });
 

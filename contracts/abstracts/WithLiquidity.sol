@@ -17,7 +17,7 @@ abstract contract WithLiquidity is Base {
 
         bytes memory callData = abi.encodeWithSelector(receiveNUnlockSelector, amount, receiver);
 
-        initBridge(callData, oppositeContract, thisContractDomain, oppositeContractDomain, address(token));
+        initBridge(callData, oppositeContract, thisContractDomain, oppositeContractDomain);
     }
 
     function receiveNUnlock(uint amount, address receiver) public override onlyExecutor {

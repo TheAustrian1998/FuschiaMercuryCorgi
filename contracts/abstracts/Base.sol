@@ -5,12 +5,14 @@ import { IConnextHandler } from "@connext/nxtp-contracts/contracts/interfaces/IC
 import { IExecutor } from "@connext/nxtp-contracts/contracts/interfaces/IExecutor.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
 import "../interfaces/IConnextHandlerAux.sol";
 
-abstract contract Base is Ownable {
+abstract contract Base is Ownable, Pausable {
 
     IConnextHandler public immutable connext;
     address public executor; // address of connext executor
+    address public tokenFee; // token to pay relayer fees
 
     uint32 public thisContractDomain; // this contract chain
     uint32 public oppositeContractDomain; // receiver contract chain
@@ -21,11 +23,12 @@ abstract contract Base is Ownable {
 
     bool isInitialized = false;
 
-    constructor(IConnextHandler _connext, uint32 _thisContractDomain, uint32 _oppositeContractDomain) {
+    constructor(IConnextHandler _connext, uint32 _thisContractDomain, uint32 _oppositeContractDomain, address _tokenFee) {
         connext = _connext;
         thisContractDomain = _thisContractDomain;
         oppositeContractDomain = _oppositeContractDomain;
         executor = address(IConnextHandlerAux(address(_connext)).executor());
+        tokenFee = _tokenFee;
     }
 
     modifier onlyExecutor() {
@@ -35,7 +38,7 @@ abstract contract Base is Ownable {
         _;
     }
 
-    function initBridge(bytes memory callData, address to, uint32 originDomain, uint32 destinationDomain, address transactingAssetId) internal {
+    function initBridge(bytes memory callData, address to, uint32 originDomain, uint32 destinationDomain) internal whenNotPaused {
         IConnextHandler.CallParams memory callParams = IConnextHandler.CallParams({
             to: to,
             callData: callData,
@@ -45,7 +48,7 @@ abstract contract Base is Ownable {
 
         IConnextHandler.XCallArgs memory xcallArgs = IConnextHandler.XCallArgs({
             params: callParams,
-            transactingAssetId: transactingAssetId,
+            transactingAssetId: tokenFee,
             amount: 0,
             relayerFee: 0
         });
@@ -63,12 +66,20 @@ abstract contract Base is Ownable {
 
     function _lockNSend(uint amount, address receiver) internal virtual { }
 
-    function lockNSend(uint amount) public { 
+    function lockNSend(uint amount) public whenNotPaused { 
         _lockNSend(amount, msg.sender);
     }
 
-    function lockNSend(uint amount, address receiver) public {
+    function lockNSend(uint amount, address receiver) public whenNotPaused {
         _lockNSend(amount, receiver);
+    }
+
+    function pause() public onlyOwner {
+        _pause();
+    }
+
+    function unpause() public onlyOwner {
+        _unpause();
     }
 
 }
