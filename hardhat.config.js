@@ -1,4 +1,7 @@
 require("@nomiclabs/hardhat-waffle");
+require("./tasks/init.js");
+
+let { privateKey, kovanRpc, goerliRpc } = require("./secrets.json");
 
 module.exports = {
   solidity: {
@@ -13,5 +16,15 @@ module.exports = {
         }
       },
     ],
+  },
+  networks: {
+    kovan: {
+      url: kovanRpc,
+      accounts: [privateKey]
+    },
+    goerli: {
+      url: goerliRpc,
+      accounts: [privateKey]
+    }
   }
 };

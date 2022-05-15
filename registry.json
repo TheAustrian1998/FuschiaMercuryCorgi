@@ -1,0 +1,10 @@
+{
+    "ConnextHandlerGoerli":"0xDc495507b830E5D1d8C073D4B12D144e76100816",
+    "ConnextHandlerKovan":"0x71a52104739064bc35bED4Fc3ba8D9Fb2a84767f",
+    "GoerliDomain":"3331",
+    "KovanDomain":"2221",
+    "TokenFeeGoerli":"0xD426e23A6a9524101CDC017e01dDc3262B7aA65D",
+    "TokenFeeKovan":"0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F",
+    "TestTokenGoerli":"0xD426e23A6a9524101CDC017e01dDc3262B7aA65D",
+    "TestTokenKovan":"0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F"
+}
