@@ -33,6 +33,10 @@ contract ConnextMock {
         Side(side).receiveNUnlock(amount, receiver);
     }
 
+    function getExecutor() external view returns (address) {
+        return executor;
+    }
+
     function xcall(IConnextHandler.XCallArgs memory xcallArgs) external payable returns (bytes32) {
         data = xcallArgs;
         return bytes32("");

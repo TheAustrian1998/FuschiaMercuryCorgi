@@ -21,4 +21,8 @@ contract FalseExecutorConnextMock {
         Side(side).receiveNUnlock(amount, receiver);
     }
 
+    function getExecutor() external view returns (address) {
+        return executor;
+    }
+
 }

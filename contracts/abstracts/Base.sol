@@ -6,7 +6,6 @@ import { IExecutor } from "@connext/nxtp-contracts/contracts/interfaces/IExecuto
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
-import "../interfaces/IConnextHandlerAux.sol";
 
 abstract contract Base is Ownable, Pausable {
 
@@ -27,7 +26,7 @@ abstract contract Base is Ownable, Pausable {
         connext = _connext;
         thisContractDomain = _thisContractDomain;
         oppositeContractDomain = _oppositeContractDomain;
-        executor = address(IConnextHandlerAux(address(_connext)).executor());
+        executor = _connext.getExecutor();
         tokenFee = _tokenFee;
     }
 
@@ -43,7 +42,9 @@ abstract contract Base is Ownable, Pausable {
             to: to,
             callData: callData,
             originDomain: originDomain,
-            destinationDomain: destinationDomain
+            destinationDomain: destinationDomain,
+            forceSlow: false,
+            receiveLocal: false
         });
 
         IConnextHandler.XCallArgs memory xcallArgs = IConnextHandler.XCallArgs({
