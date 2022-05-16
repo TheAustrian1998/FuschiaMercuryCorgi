@@ -15,7 +15,8 @@ async function main() {
     this.SideWithLiquidity = await ethers.getContractFactory("SideWithLiquidity");
     this.sideWithLiquidity = await this.SideWithLiquidity.deploy(ConnextHandlerGoerli, GoerliDomain, KovanDomain, TokenFeeGoerli, TestTokenGoerli);
     await this.sideWithLiquidity.deployed();
-    
+
+    console.log("Deployed at: ", this.sideWithLiquidity.address);
 };
 
 main()

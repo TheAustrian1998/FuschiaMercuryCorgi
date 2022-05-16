@@ -1,5 +1,6 @@
 require("@nomiclabs/hardhat-waffle");
 require("./tasks/init.js");
+require("./tasks/bridge.js");
 
 let { privateKey, kovanRpc, goerliRpc } = require("./secrets.json");
 

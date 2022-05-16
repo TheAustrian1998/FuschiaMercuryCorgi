@@ -16,6 +16,7 @@ async function main() {
     this.sideWithLiquidity = await this.SideWithLiquidity.deploy(ConnextHandlerKovan, KovanDomain, GoerliDomain, TokenFeeKovan, TestTokenKovan);
     await this.sideWithLiquidity.deployed();
     
+    console.log("Deployed at: ", this.sideWithLiquidity.address);
 };
 
 main()
