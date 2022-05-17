@@ -22,6 +22,10 @@ abstract contract Base is Ownable, Pausable {
 
     bool isInitialized = false;
 
+    event Initialized(address oppositeContract);
+    event ReceivedNUnlocked(uint amount, address receiver);
+    event LockedNSend(uint amount, address receiver);
+
     constructor(IConnextHandler _connext, uint32 _thisContractDomain, uint32 _oppositeContractDomain, address _tokenFee) {
         connext = _connext;
         thisContractDomain = _thisContractDomain;
@@ -61,6 +65,7 @@ abstract contract Base is Ownable, Pausable {
         require(!isInitialized, "dont hack blz");
         oppositeContract = _oppositeContract;
         isInitialized = true;
+        emit Initialized(_oppositeContract);
     }
 
     function receiveNUnlock(uint amount, address receiver) public virtual onlyExecutor { }

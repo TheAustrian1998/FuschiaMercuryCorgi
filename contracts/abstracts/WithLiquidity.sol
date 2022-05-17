@@ -18,12 +18,14 @@ abstract contract WithLiquidity is Base {
         bytes memory callData = abi.encodeWithSelector(receiveNUnlockSelector, amount, receiver);
 
         initBridge(callData, oppositeContract, thisContractDomain, oppositeContractDomain);
+        emit LockedNSend(amount, receiver);
     }
 
     function receiveNUnlock(uint amount, address receiver) public override onlyExecutor {
         require(amount > 0, "!amount");
         require(availableLiquidity() >= amount, "!liquidity");
         token.transfer(receiver, amount);
+        emit ReceivedNUnlocked(amount, receiver);
     }
 
     function availableLiquidity() public view returns (uint) {

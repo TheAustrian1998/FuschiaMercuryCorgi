@@ -14,11 +14,13 @@ abstract contract WithMint is Base, ERC20 {
         bytes memory callData = abi.encodeWithSelector(receiveNUnlockSelector, amount, receiver);
 
         initBridge(callData, oppositeContract, thisContractDomain, oppositeContractDomain);
+        emit LockedNSend(amount, receiver);
     }
 
     function receiveNUnlock(uint amount, address receiver) public override onlyExecutor {
         require(amount > 0, "!amount");
         _mint(receiver, amount);
+        emit ReceivedNUnlocked(amount, receiver);
     }
 
 }
