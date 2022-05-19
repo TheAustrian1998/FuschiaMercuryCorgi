@@ -2,8 +2,9 @@ require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-etherscan");
 require("./tasks/init.js");
 require("./tasks/bridge.js");
+require("./tasks/mint.js");
 
-let { privateKey, kovanRpc, goerliRpc, kovanEtherscanApiKey } = require("./secrets.json");
+let { privateKey, kovanRpc, goerliRpc, rinkebyRpc, kovanEtherscanApiKey } = require("./secrets.json");
 
 module.exports = {
   solidity: {
@@ -26,6 +27,10 @@ module.exports = {
     },
     goerli: {
       url: goerliRpc,
+      accounts: [privateKey]
+    },
+    rinkeby: {
+      url: rinkebyRpc,
       accounts: [privateKey]
     }
   },

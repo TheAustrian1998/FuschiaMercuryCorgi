@@ -47,7 +47,7 @@ abstract contract Base is Ownable, Pausable {
             callData: callData,
             originDomain: originDomain,
             destinationDomain: destinationDomain,
-            forceSlow: false,
+            forceSlow: true,
             receiveLocal: false
         });
 
