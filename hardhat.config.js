@@ -1,10 +1,17 @@
 require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-etherscan");
+require("hardhat-gas-reporter");
 require("./tasks/init.js");
 require("./tasks/bridge.js");
 require("./tasks/mint.js");
 
-let { privateKey, kovanRpc, goerliRpc, rinkebyRpc, kovanEtherscanApiKey } = require("./secrets.json");
+let { 
+  privateKey, 
+  kovanRpc, 
+  goerliRpc, 
+  rinkebyRpc, 
+  kovanEtherscanApiKey 
+} = require("./secrets.json");
 
 module.exports = {
   solidity: {
@@ -36,7 +43,10 @@ module.exports = {
   },
   etherscan: {
     apiKey: {
-        kovan: kovanEtherscanApiKey
-      }
+      kovan: kovanEtherscanApiKey
     }
+  },
+  gasReporter: {
+    excludeContracts: ["/mocks/", "ERC20"]
+  }
 };

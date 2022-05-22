@@ -12,6 +12,7 @@
   "dependencies": {
     "@connext/nxtp-sdk": "^0.2.0-alpha.16",
     "@openzeppelin/contracts": "^4.6.0",
-    "@openzeppelin/contracts-upgradeable": "^4.6.0"
+    "@openzeppelin/contracts-upgradeable": "^4.6.0",
+    "hardhat-gas-reporter": "^1.0.8"
   }
 }
