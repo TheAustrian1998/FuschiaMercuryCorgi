@@ -7,6 +7,9 @@ abstract contract WithLiquidity is Base {
 
     IERC20 public immutable token;
 
+    event AddedLiquidity(uint amount);
+    event RemovedLiquidity(uint amount);
+
     constructor (IERC20 _token) {
         token = _token;
     }
@@ -30,6 +33,16 @@ abstract contract WithLiquidity is Base {
 
     function availableLiquidity() public view returns (uint) {
         return token.balanceOf(address(this));
+    }
+
+    function addLiquidity(uint amount) public onlyOwner {
+        token.transferFrom(msg.sender, address(this), amount);
+        emit AddedLiquidity(amount);
+    }
+
+    function removeLiquidity(uint amount) public onlyOwner {
+        token.transfer(msg.sender, amount);
+        emit RemovedLiquidity(amount);
     }
     
 }
