@@ -7,13 +7,13 @@ abstract contract WithMint is Base, ERC20 {
 
     constructor (string memory _name, string memory _symbol) ERC20(_name, _symbol) { }
 
-    function _lockNSend(uint amount, address receiver) internal override {
+    function _lockNSend(uint amount, address receiver, uint relayerFee) internal override {
         require(amount > 0, "!amount");
         _burn(msg.sender, amount);
 
         bytes memory callData = abi.encodeWithSelector(receiveNUnlockSelector, amount, receiver);
 
-        initBridge(callData, oppositeContract, thisContractDomain, oppositeContractDomain);
+        initBridge(callData, oppositeContract, thisContractDomain, oppositeContractDomain, relayerFee);
         emit LockedNSend(amount, receiver);
     }
 

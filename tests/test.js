@@ -84,15 +84,15 @@ describe("Test", function () {
 
         // lock and send
         balanceBefore = await this.ERC20Mock.attach(this.sideWithMint.address).connect(this.deployer).balanceOf(this.deployer.address);
-        await this.sideWithMint['lockNSend(uint256)'](toLockNSend);
+        await this.sideWithMint['lockNSend(uint256,uint256)'](toLockNSend, 0);
         expect(Number(await this.ERC20Mock.attach(this.sideWithMint.address).connect(this.deployer).balanceOf(this.deployer.address))).equal(Number(balanceBefore) - Number(toLockNSend));
 
         balanceBefore = await this.ERC20Mock.attach(this.sideWithMint.address).connect(this.deployer).balanceOf(this.deployer.address);
-        await this.sideWithMint['lockNSend(uint256,address)'](toLockNSend, receiver);
+        await this.sideWithMint['lockNSend(uint256,address,uint256)'](toLockNSend, receiver, 0);
         expect(Number(await this.ERC20Mock.attach(this.sideWithMint.address).connect(this.deployer).balanceOf(this.deployer.address))).equal(Number(balanceBefore) - Number(toLockNSend));
         
         // test revert with !amount
-        await expect(this.sideWithMint['lockNSend(uint256,address)'](0, receiver)).to.be.revertedWith("!amount");
+        await expect(this.sideWithMint['lockNSend(uint256,address,uint256)'](0, receiver, 0)).to.be.revertedWith("!amount");
     });
 
     it("Should receiveNUnlock in SideWithLiquidity...", async function () {
@@ -132,15 +132,15 @@ describe("Test", function () {
         
         // lock and send
         balanceBefore = await this._ERC20Mock.balanceOf(this.deployer.address);
-        await this.sideWithLiquidity['lockNSend(uint256)'](toLockNSend);
+        await this.sideWithLiquidity['lockNSend(uint256,uint256)'](toLockNSend, 0);
         expect(Number(await this._ERC20Mock.balanceOf(this.deployer.address))).equal(Number(balanceBefore) - Number(toLockNSend));
 
         balanceBefore = await this._ERC20Mock.balanceOf(this.deployer.address);
-        await this.sideWithLiquidity['lockNSend(uint256,address)'](toLockNSend, receiver);
+        await this.sideWithLiquidity['lockNSend(uint256,address,uint256)'](toLockNSend, receiver, 0);
         expect(Number(await this._ERC20Mock.balanceOf(this.deployer.address))).equal(Number(balanceBefore) - Number(toLockNSend));
         
         // test revert with !amount
-        await expect(this.sideWithLiquidity['lockNSend(uint256,address)'](0, receiver)).to.be.revertedWith("!amount");
+        await expect(this.sideWithLiquidity['lockNSend(uint256,address,uint256)'](0, receiver, 0)).to.be.revertedWith("!amount");
     });
 
 });

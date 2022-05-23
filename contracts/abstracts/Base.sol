@@ -41,7 +41,7 @@ abstract contract Base is Ownable, Pausable {
         _;
     }
 
-    function initBridge(bytes memory callData, address to, uint32 originDomain, uint32 destinationDomain) internal whenNotPaused {
+    function initBridge(bytes memory callData, address to, uint32 originDomain, uint32 destinationDomain, uint relayerFee) internal whenNotPaused {
         IConnextHandler.CallParams memory callParams = IConnextHandler.CallParams({
             to: to,
             callData: callData,
@@ -55,7 +55,7 @@ abstract contract Base is Ownable, Pausable {
             params: callParams,
             transactingAssetId: tokenFee,
             amount: 0,
-            relayerFee: 0
+            relayerFee: relayerFee
         });
 
         connext.xcall(xcallArgs);
@@ -70,14 +70,14 @@ abstract contract Base is Ownable, Pausable {
 
     function receiveNUnlock(uint amount, address receiver) public virtual onlyExecutor { }
 
-    function _lockNSend(uint amount, address receiver) internal virtual { }
+    function _lockNSend(uint amount, address receiver, uint relayerFee) internal virtual { }
 
-    function lockNSend(uint amount) public whenNotPaused { 
-        _lockNSend(amount, msg.sender);
+    function lockNSend(uint amount, uint relayerFee) public whenNotPaused { 
+        _lockNSend(amount, msg.sender, relayerFee);
     }
 
-    function lockNSend(uint amount, address receiver) public whenNotPaused {
-        _lockNSend(amount, receiver);
+    function lockNSend(uint amount, address receiver, uint relayerFee) public whenNotPaused {
+        _lockNSend(amount, receiver, relayerFee);
     }
 
     function pause() public onlyOwner {

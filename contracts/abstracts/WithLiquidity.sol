@@ -11,13 +11,13 @@ abstract contract WithLiquidity is Base {
         token = _token;
     }
 
-    function _lockNSend(uint amount, address receiver) internal override {
+    function _lockNSend(uint amount, address receiver, uint relayerFee) internal override {
         require(amount > 0, "!amount");
         token.transferFrom(msg.sender, address(this), amount);
 
         bytes memory callData = abi.encodeWithSelector(receiveNUnlockSelector, amount, receiver);
 
-        initBridge(callData, oppositeContract, thisContractDomain, oppositeContractDomain);
+        initBridge(callData, oppositeContract, thisContractDomain, oppositeContractDomain, relayerFee);
         emit LockedNSend(amount, receiver);
     }
 
