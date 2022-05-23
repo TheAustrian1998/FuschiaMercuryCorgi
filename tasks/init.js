@@ -7,5 +7,5 @@ task("init", "init...")
         this.Side = await ethers.getContractFactory("SideWithLiquidity");
         let tx = await this.Side.attach(taskArgs.side).init(taskArgs.oppositecontract);
 
-        console.log(tx);
+        console.log("Tx sended: ", tx.hash);
     });

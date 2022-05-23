@@ -7,5 +7,5 @@ task("mint", "mint test token...")
         this.ERC20Mock = await ethers.getContractFactory("ERC20Mock");
         let tx = await this.ERC20Mock.attach(taskArgs.token).mint(taskArgs.receiver, ethers.utils.parseUnits("10000"));
 
-        console.log(tx);
+        console.log("Tx sended: ", tx.hash);
     });

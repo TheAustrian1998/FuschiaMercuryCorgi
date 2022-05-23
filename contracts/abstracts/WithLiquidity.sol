@@ -31,15 +31,21 @@ abstract contract WithLiquidity is Base {
         emit ReceivedNUnlocked(amount, receiver);
     }
 
+    /// @notice Returns available liquidity in the contract
+    /// @return contract token balance
     function availableLiquidity() public view returns (uint) {
         return token.balanceOf(address(this));
     }
 
+    /// @notice Add tokens to the contract
+    /// @param amount amount to add 
     function addLiquidity(uint amount) public onlyOwner {
         token.transferFrom(msg.sender, address(this), amount);
         emit AddedLiquidity(amount);
     }
 
+    /// @notice Remove tokens from the contract
+    /// @param amount amount to remove 
     function removeLiquidity(uint amount) public onlyOwner {
         token.transfer(msg.sender, amount);
         emit RemovedLiquidity(amount);

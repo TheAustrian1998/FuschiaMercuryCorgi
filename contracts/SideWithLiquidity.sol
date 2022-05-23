@@ -4,6 +4,7 @@ pragma solidity ^0.8.11;
 import "./abstracts/WithLiquidity.sol";
 
 contract SideWithLiquidity is WithLiquidity {
+    
     constructor (
         IConnextHandler _connext, 
         uint32 _thisContractDomain, 

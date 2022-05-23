@@ -43,5 +43,5 @@ task("bridge", "bridge...")
             });
         }
 
-        console.log(tx);
+        console.log("Tx sended: ", tx.hash);
     });
