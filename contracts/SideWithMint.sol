@@ -9,7 +9,7 @@ contract SideWithMint is WithMint {
         IConnextHandler _connext, 
         uint32 _thisContractDomain, 
         uint32 _oppositeContractDomain, 
-        address _tokenFee,
+        IERC20 _tokenFee,
         string memory _name, 
         string memory _symbol
     ) Base (

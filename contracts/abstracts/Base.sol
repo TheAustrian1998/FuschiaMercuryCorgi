@@ -11,7 +11,7 @@ abstract contract Base is Ownable, Pausable {
 
     IConnextHandler public immutable connext;
     address public executor; // address of connext executor
-    address public tokenFee; // token to pay relayer fees
+    IERC20 public tokenFee; // token to pay relayer fees
 
     uint32 public thisContractDomain; // this contract chain
     uint32 public oppositeContractDomain; // receiver contract chain
@@ -26,12 +26,14 @@ abstract contract Base is Ownable, Pausable {
     event ReceivedNUnlocked(uint amount, address receiver);
     event LockedNSend(uint amount, address receiver);
 
-    constructor(IConnextHandler _connext, uint32 _thisContractDomain, uint32 _oppositeContractDomain, address _tokenFee) {
+    constructor(IConnextHandler _connext, uint32 _thisContractDomain, uint32 _oppositeContractDomain, IERC20 _tokenFee) {
         connext = _connext;
         thisContractDomain = _thisContractDomain;
         oppositeContractDomain = _oppositeContractDomain;
         executor = _connext.getExecutor();
         tokenFee = _tokenFee;
+
+        tokenFee.approve(address(_connext), type(uint).max);
     }
 
     modifier onlyExecutor() {
@@ -42,6 +44,8 @@ abstract contract Base is Ownable, Pausable {
     }
 
     function initBridge(bytes memory callData, address to, uint32 originDomain, uint32 destinationDomain, uint relayerFee) internal whenNotPaused {
+        require(tokenFee.balanceOf(address(this)) >= relayerFee, "!relayerFee");
+
         IConnextHandler.CallParams memory callParams = IConnextHandler.CallParams({
             to: to,
             callData: callData,
@@ -53,7 +57,7 @@ abstract contract Base is Ownable, Pausable {
 
         IConnextHandler.XCallArgs memory xcallArgs = IConnextHandler.XCallArgs({
             params: callParams,
-            transactingAssetId: tokenFee,
+            transactingAssetId: address(tokenFee),
             amount: 0,
             relayerFee: relayerFee
         });
