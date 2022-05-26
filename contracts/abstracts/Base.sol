@@ -1,8 +1,9 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.11;
 
-import { IConnextHandler } from "@connext/nxtp-contracts/contracts/interfaces/IConnextHandler.sol";
-import { IExecutor } from "@connext/nxtp-contracts/contracts/interfaces/IExecutor.sol";
+import { IConnextHandler } from "@connext/nxtp-contracts/contracts/core/connext/interfaces/IConnextHandler.sol";
+import { IExecutor } from "@connext/nxtp-contracts/contracts/core/connext/interfaces/IExecutor.sol";
+import { CallParams, XCallArgs } from "@connext/nxtp-contracts/contracts/core/connext/libraries/LibConnextStorage.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
@@ -30,7 +31,7 @@ abstract contract Base is Ownable, Pausable {
         connext = _connext;
         thisContractDomain = _thisContractDomain;
         oppositeContractDomain = _oppositeContractDomain;
-        executor = _connext.getExecutor();
+        executor = address(connext.executor());
         tokenFee = _tokenFee;
 
         tokenFee.approve(address(_connext), type(uint).max);
@@ -46,16 +47,19 @@ abstract contract Base is Ownable, Pausable {
     function initBridge(bytes memory callData, address to, uint32 originDomain, uint32 destinationDomain, uint relayerFee) internal whenNotPaused {
         require(tokenFee.balanceOf(address(this)) >= relayerFee, "!relayerFee");
 
-        IConnextHandler.CallParams memory callParams = IConnextHandler.CallParams({
+        CallParams memory callParams = CallParams({
             to: to,
             callData: callData,
             originDomain: originDomain,
             destinationDomain: destinationDomain,
+            recovery: to,
+            callback: address(this),
+            callbackFee: 0,
             forceSlow: true,
             receiveLocal: false
         });
 
-        IConnextHandler.XCallArgs memory xcallArgs = IConnextHandler.XCallArgs({
+        XCallArgs memory xcallArgs = XCallArgs({
             params: callParams,
             transactingAssetId: address(tokenFee),
             amount: 0,
